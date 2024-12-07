@@ -1,34 +1,25 @@
 'use client';
 
-import PriceChart from '@/components/PriceChart';
-import Table from '@/components/Table';
-import { useEffect, useState } from 'react';
+import StatusBarChart from '@/components/charts/StatusBarChart';
+import TrendGraph from '@/components/charts/TrendGraph';
+import React from 'react';
 
-
-type MlsData = {
-  _id: string;
-  referenceCode: string;
-  type: string;
-  listing: { title: string; price: { price: number; currency: string } };
-  agent: { firstName: string; lastName: string };
-  pictures: { url: string }[];
-  videos: { url: string }[];
-};
-
-export default function HomePage() {
-  const [mlsData, setMlsData] = useState<MlsData[]>([]);
-
-  useEffect(() => {
-    fetch('/api/test-db')
-      .then((res) => res.json())
-      .then((data) => setMlsData(data.data));
-  }, []);
-
+const DashboardPage: React.FC = () => {
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Pulppo MLS Dashboard</h1>
-      <PriceChart data={mlsData} />
-      <Table data={mlsData} />
+    <div className="container mx-auto p-6">
+      <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
+
+      <div className="mb-8">
+        <h2 className="text-lg font-semibold mb-4">Published vs Cancelled Properties</h2>
+        <StatusBarChart />
+      </div>
+
+      <div>
+        <h2 className="text-lg font-semibold mb-4">Property Trends</h2>
+        <TrendGraph />
+      </div>
     </div>
   );
-}
+};
+
+export default DashboardPage;
