@@ -1,23 +1,26 @@
 'use client';
 
-import StatusBarChart from '@/components/charts/StatusBarChart';
-import TrendGraph from '@/components/charts/TrendGraph';
-import React from 'react';
+import Tabs from '@/components/ui/Tabs';
+import Title from '@/components/ui/Title';
+import PropertiesTab from '@/components/tabs/PropertiesTab';
+import AgentsTab from '@/components/tabs/AgentsTab';
+import CompaniesTab from '@/components/tabs/CompaniesTab';
 
 const DashboardPage: React.FC = () => {
+  const tabs = [
+    { label: 'Properties', key: 'properties' },
+    { label: 'Agents', key: 'agents' },
+    { label: 'Companies', key: 'companies' },
+  ];
+
   return (
     <div className="container mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
-
-      <div className="mb-8">
-        <h2 className="text-lg font-semibold mb-4">Published vs Cancelled Properties</h2>
-        <StatusBarChart />
-      </div>
-
-      <div>
-        <h2 className="text-lg font-semibold mb-4">Property Trends</h2>
-        <TrendGraph />
-      </div>
+      <Title>Dashboard</Title>
+      <Tabs tabs={tabs}>
+        <PropertiesTab />
+        <AgentsTab />
+        <CompaniesTab />
+      </Tabs>
     </div>
   );
 };
