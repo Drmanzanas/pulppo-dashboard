@@ -24,3 +24,19 @@ body {
 .heading2 {
   @apply text-lg font-semibold text-gray-800 mb-4;
 }
+
+/* Hide scrollbar for Webkit-based browsers (Chrome, Safari, Edge) */
+.scroll-container::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for Firefox */
+.scroll-container {
+  scrollbar-width: none;
+}
+
+/* Ensure scroll behavior works without showing the scrollbar */
+.scroll-container {
+  -ms-overflow-style: none; /* For Internet Explorer and Edge */
+  overflow-y: scroll; /* Allow scrolling */
+}

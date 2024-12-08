@@ -6,7 +6,6 @@ const CompaniesTab: React.FC = () => {
       <Heading>Companies Overview</Heading>
       <p>Total Companies: 50</p>
       <p>Top Performing Companies:</p>
-      {/* Replace with companies-related charts or data */}
     </div>
   );
 };

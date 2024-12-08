@@ -1,63 +1,116 @@
-'use client';
+import React, { useEffect, useRef } from 'react';
+import DynamicTable from './DynamicTable';
+import Chip from '../ui/Chip';
+import PriceTag from '../ui/PriceTag';
+import LocationBadge from '../ui/LocationBadge';
+import TooltipTitle from '../ui/TooltipTitle';
+import TableText from '../ui/TableText';
+import AgentInfo from '../ui/agents/AgentInfo';
+import useInfiniteScroll from 'src/hooks/useInfiniteScroll';
 
-import React from 'react';
+const RecentProperties = () => {
+  const { data, loading, loadMore, hasMore } = useInfiniteScroll('api/properties/recent');
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const RecentPropertiesTable = ({
-  data,
-  loading,
-  title
-}: {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data: any[];
-  loading: boolean;
-  title?: string
-}) => {
+  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+
+  const handleScroll = () => {
+    if (!scrollContainerRef.current || !hasMore || loading) return;
+
+    const { scrollTop, scrollHeight, clientHeight } = scrollContainerRef.current;
+
+    if (scrollTop + clientHeight >= scrollHeight - 10) {
+      loadMore();
+    }
+  };
+
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (container) {
+      container.addEventListener('scroll', handleScroll);
+    }
+    return () => {
+      if (container) {
+        container.removeEventListener('scroll', handleScroll);
+      }
+    };
+  }, [hasMore, loading]);
+
+  const columns = [
+    {
+      header: 'Title',
+      key: 'title',
+      renderHeader: () => <TableText primary="Title" secondary="Property Title" />,
+      render: (value: string) => <TooltipTitle title={value || 'Unknown'} truncateLength={20} />,
+    },
+    {
+      header: 'Price',
+      key: 'price',
+      renderHeader: () => <TableText primary="Price" secondary="In Currency" />,
+      render: (value: number, row: { currency: string }) => <PriceTag price={value} currency={row.currency} />,
+    },
+    {
+      header: 'Location',
+      key: 'location',
+      renderHeader: () => <TableText primary="Location" secondary="City, State, Neighborhood" />,
+      render: (value: { city: string; state: string; neighborhood: string }) => (
+        <LocationBadge city={value.city || 'Unknown'} state={value.state || 'Unknown'} neighborhood={value.neighborhood || 'Unknown'} />
+      ),
+    },
+    {
+      header: 'Agent',
+      key: 'agent',
+      renderHeader: () => <TableText primary="Agent" secondary="Name, Email, Phone" />,
+      render: (value: { name: string; email: string; phone: string; profilePicture: string }) => (
+        <AgentInfo
+          name={value.name}
+          email={value.email}
+          phone={value.phone}
+          profilePicture={value.profilePicture}
+        />
+      ),
+    },
+    {
+      header: 'Status',
+      key: 'status',
+      renderHeader: () => <TableText primary="Status" secondary="Published/Cancelled" />,
+      render: (value: string) => (
+        <Chip
+          label={value}
+          variant={
+            value === 'published'
+              ? 'success'
+              : value === 'cancelled'
+              ? 'error'
+              : 'neutral'
+          }
+        />),
+    },
+  ];
+
   return (
-    <div>
-      <h3 className="text-lg font-semibold mb-4">{title}</h3>
-      {loading ? (
-        <div className="flex justify-center items-center h-40">
-          <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-        </div>
-      ) : data.length > 0 ? (
-        <table className="min-w-full bg-white border border-gray-300 rounded-md">
-          <thead>
-            <tr className="bg-gray-200 text-left">
-              <th className="py-2 px-4">Name</th>
-              <th className="py-2 px-4">Price</th>
-              <th className="py-2 px-4">Location</th>
-              <th className="py-2 px-4">Status</th>
-            </tr>
-          </thead>
-          <tbody>
-          {data.map((property, index) => (
-            <tr key={property.id || index} className="border-b">
-              <td className="py-2 px-4">{property.name}</td>
-              <td className="py-2 px-4">{property.price}</td>
-              <td className="py-2 px-4">{property.location}</td>
-              <td className="py-2 px-4">
-                <span
-                  className={`inline-block px-3 py-1 rounded-full text-sm ${
-                    property.status.last === 'Published'
-                      ? 'bg-green-100 text-green-800'
-                      : property.status.last === 'Cancelled'
-                      ? 'bg-red-100 text-red-800'
-                      : 'bg-gray-100 text-gray-800'
-                  }`}
-                >
-                  {property.status.last}
-                </span>
-              </td>
-            </tr>
-          ))}
-          </tbody>
-        </table>
-      ) : (
-        <p className="text-center text-gray-500">No recent properties to display.</p>
-      )}
+    <div className="p-2">
+      <div
+        ref={scrollContainerRef}
+        className="relative h-[800px] overflow-y-auto scroll-container"
+      >
+        <DynamicTable
+          data={data}
+          columns={columns}
+          loading={!data.length}
+          title="Recent Properties"
+          tableConfig={{
+            enableScroll: true,
+            minWidth: 'min-w-[800px]'
+          }}
+        />
+        {loading && hasMore && (
+          <div className="h-10 flex justify-center items-center">
+            <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
 
-export default RecentPropertiesTable;
+export default RecentProperties;

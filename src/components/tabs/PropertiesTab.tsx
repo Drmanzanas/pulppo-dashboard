@@ -3,16 +3,17 @@
 import PropertyTypePieChart from '@/components/charts/PieChart';
 import RecentPropertiesTable from '../tables/RecentPropertiesTable';
 import usePropertyTypes from 'src/hooks/usePropertyTypes';
-import useRecentProperties from 'src/hooks/useRecentProperties';
 import LocationFilterChart from '../LocationFilterChart';
 import PriceRangesChartWithFilter from '../PriceRangeWithFilter';
 
 const PropertiesTab = () => {
   const { propertyTypes, loading: loadingTypes } = usePropertyTypes();
-  const { recentProperties, loading: loadingRecent } = useRecentProperties();
 
   return (
     <div>
+      <div>
+        <RecentPropertiesTable />
+      </div>
       <div className="mb-6">
         <PropertyTypePieChart
           data={propertyTypes}
@@ -30,13 +31,6 @@ const PropertiesTab = () => {
         />
       </div>
 
-      <div>
-        <RecentPropertiesTable
-          data={recentProperties}
-          loading={loadingRecent}
-          title="Recent Properties"
-        />
-      </div>
     </div>
   );
 };
