@@ -6,16 +6,30 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const client = await clientPromise;
     const db = client.db('pulppo');
 
+    
     const agents = await db
-      .collection('agents')
-      .find({})
-      .sort({ performanceScore: -1 })
-      .limit(5)
+      .collection('mls')
+      .aggregate([
+        { $match: { 'agent.firstName': { $exists: true, $ne: null } } }, 
+        {
+          $group: {
+            _id: '$agent._id',
+            name: { $first: { $concat: ['$agent.firstName', ' ', '$agent.lastName'] } },
+            email: { $first: '$agent.email' },
+            phone: { $first: '$agent.phone' },
+            profilePicture: { $first: '$agent.profilePicture' },
+            listingCount: { $sum: 1 }, 
+          },
+        },
+        { $sort: { listingCount: -1 } }, 
+        { $limit: 5 }, 
+      ])
       .toArray();
 
+    
     const formattedAgents = agents.map((agent) => ({
       id: agent._id,
-      name: `${agent.firstName || 'Unknown'} ${agent.lastName || ''}`.trim(),
+      name: agent.name || 'Unknown',
       email: agent.email || 'N/A',
       phone: agent.phone || 'N/A',
       profilePicture: agent.profilePicture || '',

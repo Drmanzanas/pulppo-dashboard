@@ -1,33 +1,59 @@
 'use client';
 
 import React from 'react';
-
 import Heading from '@/components/ui/Heading';
-import AgentCard from '../ui/agents/AgentCard';
 import useTopPerformingAgents from 'src/hooks/useTopPerformingAgents';
+import TableText from '../ui/TableText';
+import DynamicTable from '../tables/DynamicTable';
+import NameCell from '../ui/cells/NameCell';
+import EmailCell from '../ui/cells/EmailCell';
+import PhoneCell from '../ui/cells/PhoneCell';
+import ProfilePictureCell from '../ui/cells/ProfilePictureCell';
 
 const TopPerformingAgents: React.FC = () => {
   const { topAgents, loading } = useTopPerformingAgents();
 
-  console.log(topAgents)
-  if (loading) {
-    return <div>Loading Top Performing Agents...</div>;
-  }
+  
+const columns = [
+    {
+      header: 'Name',
+      key: 'name',
+      renderHeader: () => <TableText primary="Name" secondary="Agent's Full Name" />,
+      render: (value: string) => <NameCell value={value} />,
+    },
+    {
+      header: 'Email',
+      key: 'email',
+      renderHeader: () => <TableText primary="Email" secondary="Contact Email" />,
+      render: (value: string) => <EmailCell value={value} />,
+    },
+    {
+      header: 'Phone',
+      key: 'phone',
+      renderHeader: () => <TableText primary="Phone" secondary="Contact Number" />,
+      render: (value: string) => <PhoneCell value={value} />,
+    },
+    {
+      header: 'Profile Picture',
+      key: 'profilePicture',
+      renderHeader: () => <TableText primary="Profile Picture" secondary="Agent's Photo" />,
+      render: (value: string) => <ProfilePictureCell value={value} />,
+    },
+  ];
 
   return (
-    <div>
+    <div className="p-4 bg-white rounded-lg">
       <Heading>Top Performing Agents</Heading>
-      <div className="grid grid-cols-5 gap-4">
-        {topAgents?.map((agent) => (
-          <AgentCard
-            key={agent.id}
-            name={agent.name}
-            email={agent.email}
-            phone={agent.phone}
-            profilePicture={agent.profilePicture}
-          />
-        ))}
-      </div>
+      <DynamicTable
+        data={topAgents || []}
+        columns={columns}
+        loading={loading}
+        title="Top Agents"
+        tableConfig={{
+          enableScroll: true,
+          minWidth: 'min-w-[600px]',
+        }}
+      />
     </div>
   );
 };
