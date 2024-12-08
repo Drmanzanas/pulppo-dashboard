@@ -17,7 +17,7 @@ const PriceRangesChartWithFilter = () => {
 
   return (
     <div className="mb-6">
-      <Heading>Amount of Properties Price Range </Heading>
+      <Heading>Amount of Properties Published Price Range </Heading>
       <div className="flex justify-end mb-4">
         <FilterDropdown
           options={[
