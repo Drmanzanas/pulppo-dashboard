@@ -16,7 +16,7 @@ const LocationFilterChart = () => {
     loading: filtersLoading, 
     fetchStates, 
     fetchCities, 
-    fetchCountries
+    fetchCountries 
   } = useFilters();
 
   const [country, setCountry] = useState<string | null>(null);
@@ -24,24 +24,32 @@ const LocationFilterChart = () => {
   const [city, setCity] = useState<string | null>(null);
   const [currency, setCurrency] = useState<string | null>(null);
 
+  
   useEffect(() => {
-    fetchCountries(); 
+    fetchCountries();
   }, []);
+
+  useEffect(() => {
+    if (countries.length > 0 && !country) {
+      const firstCountry = countries[0].id;
+      handleFilterChange('country', firstCountry);
+    }
+  }, [countries]);
 
   const handleFilterChange = (field: 'country' | 'state' | 'city' | 'currency', value: string) => {
     if (field === 'country') {
-      setCountry(value);
+      setCountry(value || null); 
       setState(null); 
       setCity(null); 
       fetchStates(value); 
     } else if (field === 'state') {
-      setState(value);
+      setState(value || null); 
       setCity(null); 
       fetchCities(value); 
     } else if (field === 'city') {
-      setCity(value);
-    }else if (field === 'currency') {
-      setCurrency(value); 
+      setCity(value || null); 
+    } else if (field === 'currency') {
+      setCurrency(value || null); 
     }
 
     
@@ -50,51 +58,51 @@ const LocationFilterChart = () => {
       stateId: state, 
       cityId: city,
       currency,
-      [field + 'Id']: value, 
+      [`${field}Id`]: value || null, 
     });
   };
 
-  
-
-
-  console.log(averagePrices)
   return (
     <div>
-      <Heading>Average Price by Location</Heading>
+      <Heading>Average Published Price by Location</Heading>
       <div className="grid grid-cols-3 gap-4 mb-4">
         <FilterDropdown
           options={countries.map((c) => ({ value: c.id, label: c.name }))}
           onChange={(value) => handleFilterChange('country', value)}
           label="Country"
-        //   loading={filtersLoading}
         />
         <FilterDropdown
-          options={states.map((s) => ({ value: s.id, label: s.name }))}
+          options={[
+            { value: '', label: 'All States' }, 
+            ...states.map((s) => ({ value: s.id, label: s.name })),
+          ]}
           onChange={(value) => handleFilterChange('state', value)}
           label="State"
           loading={filtersLoading || !country}
           disabled={!country}
         />
         <FilterDropdown
-          options={cities.map((c) => ({ value: c.id, label: c.name }))}
+          options={[
+            { value: '', label: 'All Cities' }, 
+            ...cities.map((c) => ({ value: c.id, label: c.name })),
+          ]}
           onChange={(value) => handleFilterChange('city', value)}
           label="City"
           loading={filtersLoading || !state}
           disabled={!state}
         />
       </div>
-      <div className='grid grid-cols-1 mb-4'>
-      <CustomBarChart
-        data={averagePrices.map((item) => ({
+      <div className="grid grid-cols-1 mb-4">
+        <CustomBarChart
+          data={averagePrices.map((item) => ({
             label: item?.currency,
             price: item.averagePrice,
-            currency: item?.currency
-        }))}
-        loading={loading}
-        title=''
+            currency: item?.currency,
+          }))}
+          loading={loading}
+          title=""
         />
       </div>
-      
     </div>
   );
 };
