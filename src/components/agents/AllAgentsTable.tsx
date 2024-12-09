@@ -9,15 +9,27 @@ import Chip from '../ui/Chip';
 import EmailCell from '../ui/cells/EmailCell';
 import NameCell from '../ui/cells/NameCell';
 import useAgents from 'src/hooks/useAgents';
+import ProfilePictureCell from '../ui/cells/ProfilePictureCell';
 
 const AllAgentsTable: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
   const { agents, loading, hasMore, loadMore, resetPagination } = useAgents(
-    searchTerm
+    debouncedSearchTerm
   );
 
   useEffect(() => {
     resetPagination();
+  }, [searchTerm]);
+
+   useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 300); 
+
+    return () => {
+      clearTimeout(handler);
+    };
   }, [searchTerm]);
 
   const columns = [
@@ -55,6 +67,14 @@ const AllAgentsTable: React.FC = () => {
         />
       ),
     },
+    {
+        header: 'Profile Picture',
+        key: 'profilePicture',
+        renderHeader: () => (
+          <TableText primary="Profile Picture" secondary="Agent's Photo" />
+        ),
+        render: (value: string) => <ProfilePictureCell value={value} />
+      },
   ];
 
   return (

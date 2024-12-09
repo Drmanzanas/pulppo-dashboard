@@ -20,8 +20,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return acc;
     }, {});
 
-    console.log(formattedResult)
-
     res.status(200).json({
       published: formattedResult['published'] || 0,
       cancelled: formattedResult['cancelled'] || 0,

@@ -4,13 +4,11 @@ import Tabs from '@/components/ui/Tabs';
 import Title from '@/components/ui/Title';
 import PropertiesTab from '@/components/tabs/PropertiesTab';
 import AgentsTab from '@/components/tabs/AgentsTab';
-import CompaniesTab from '@/components/tabs/CompaniesTab';
 
 const DashboardPage: React.FC = () => {
   const tabs = [
     { label: 'Properties', key: 'properties' },
     { label: 'Agents', key: 'agents' },
-    { label: 'Companies', key: 'companies' },
   ];
 
   return (
@@ -19,7 +17,6 @@ const DashboardPage: React.FC = () => {
       <Tabs tabs={tabs}>
         <PropertiesTab />
         <AgentsTab />
-        <CompaniesTab />
       </Tabs>
     </div>
   );

@@ -12,7 +12,6 @@ const PriceRangesBarChart = ({
   title: string;
   loading: boolean;
 }) => {
-    console.log(data)
     return (
     <div className="w-90 h-96 relative">
         <Heading>{title}</Heading>

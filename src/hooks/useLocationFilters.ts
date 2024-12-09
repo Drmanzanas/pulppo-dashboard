@@ -14,7 +14,6 @@ const useFilters = () => {
     try {
       const response = await fetch('/api/filters/country');
       const data: FilterLocation[] = await response.json(); 
-      console.log(data);
       setCountries(data);
     } catch (error) {
       console.error('Error fetching countries:', error);

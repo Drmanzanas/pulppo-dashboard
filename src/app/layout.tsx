@@ -9,32 +9,6 @@ export default function RootLayout({ children, params }: { children: React.React
   return (
     <html lang="en">
       <body className="h-screen bg-gray-100">
-        {/* Shared Header */}
-        <header className="bg-blue-600 text-white p-4">
-          <div className="container mx-auto flex items-center justify-between">
-            <h1 className="text-xl font-bold">Pulppo Dashboard</h1>
-            <nav>
-              <ul className="flex space-x-4">
-                <li>
-                  <Link href="/" className="hover:underline">
-                    Home
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/analytics" className="hover:underline">
-                    Analytics
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/settings" className="hover:underline">
-                    Settings
-                  </Link>
-                </li>
-              </ul>
-            </nav>
-          </div>
-        </header>
-
         {/* Conditional Layout for Dashboard */}
         {isDashboard ? (
           <DashboardLayout>
@@ -51,16 +25,6 @@ export default function RootLayout({ children, params }: { children: React.React
                 <li>
                   <Link href="/" className="block p-2 rounded hover:bg-gray-700">
                     Dashboard
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/analytics" className="block p-2 rounded hover:bg-gray-700">
-                    Analytics
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/settings" className="block p-2 rounded hover:bg-gray-700">
-                    Settings
                   </Link>
                 </li>
               </ul>

@@ -12,23 +12,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const skip = (page - 1) * limit;
 
-    const matchQuery: any = { 'agent._id': { $exists: true } };
-
-    if (search) {
-      matchQuery.$or = [
-        { 'agent.firstName': { $regex: search, $options: 'i' } },
-        { 'agent.lastName': { $regex: search, $options: 'i' } },
-        { 'agent.email': { $regex: search, $options: 'i' } },
-        { 'agent.phone': { $regex: search, $options: 'i' } },
-      ];
-    }
-
     const agents = await db.collection('mls').aggregate([
-      { $match: matchQuery },
+      { $match: { 'agent._id': { $exists: true } } },
       {
         $group: {
-          _id: '$agent._id',
-          name: { $first: '$agent.firstName' },
+          _id: {
+            name: { $concat: ['$agent.firstName', ' ', '$agent.lastName'] },
+            profilePicture: '$agent.profilePicture',
+          },
+          id: { $first: '$agent._id' },
+          firstName: { $first: '$agent.firstName' },
           lastName: { $first: '$agent.lastName' },
           email: { $first: '$agent.email' },
           phone: { $first: '$agent.phone' },
@@ -36,11 +29,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         },
       },
       {
+        $addFields: {
+          name: {
+            $trim: {
+              input: { $concat: ['$firstName', ' ', '$lastName'] },
+            },
+          },
+        },
+      },
+      {
         $match: {
-          $or: [
-            { name: { $ne: '' } },
-            { lastName: { $ne: '' } },
-          ],
+          ...(search
+            ? {
+                $or: [
+                  { name: { $regex: search, $options: 'i' } },
+                  { email: { $regex: search, $options: 'i' } },
+                  { phone: { $regex: search, $options: 'i' } },
+                ],
+              }
+            : {}),
+          name: { $ne: '' },
         },
       },
       { $sort: { name: 1 } },
@@ -48,20 +56,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       { $limit: limit },
     ]).toArray();
 
-    const uniqueAgents = Array.from(
-      new Map(
-        agents.map((agent: any) => [
-          agent._id.toString(),
-          {
-            id: agent._id,
-            name: `${agent.name || ''} ${agent.lastName || ''}`.trim() || 'Unknown',
-            email: agent.email || 'N/A',
-            phone: agent.phone || 'N/A',
-            profilePicture: agent.profilePicture || '',
-          },
-        ])
-      ).values()
-    );
+
+    const uniqueAgents = agents.map((agent: any) => {
+      return ({
+      id: agent.id.toString() || agent._id?.toString(),
+      name: agent.name.trim() || 'Unknown',
+      email: agent.email || 'N/A',
+      phone: agent.phone || 'N/A',
+      profilePicture: agent.profilePicture || '',
+    })});
 
     res.status(200).json(uniqueAgents);
   } catch (error) {
