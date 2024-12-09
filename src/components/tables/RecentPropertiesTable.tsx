@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import DynamicTable from './DynamicTable';
 import Chip from '../ui/Chip';
 import PriceTag from '../ui/PriceTag';
@@ -35,7 +35,7 @@ const RecentProperties = () => {
     };
   }, [hasMore, loading]);
 
-  const columns = [
+  const columns = useMemo(() => [
     {
       header: 'Title',
       key: 'title',
@@ -85,7 +85,7 @@ const RecentProperties = () => {
           }
         />),
     },
-  ];
+  ],[]);
 
   return (
     <div className="p-2">

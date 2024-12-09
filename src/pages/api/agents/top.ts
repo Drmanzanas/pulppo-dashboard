@@ -26,13 +26,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       ])
       .toArray();
 
-    
+      const matchCount = await db.collection('mls').countDocuments({ 'agent.firstName': { $exists: true, $ne: null } });
+      console.log(`Matched Documents: ${matchCount}`);
     const formattedAgents = agents.map((agent) => ({
       id: agent._id,
       name: agent.name || 'Unknown',
       email: agent.email || 'N/A',
       phone: agent.phone || 'N/A',
       profilePicture: agent.profilePicture || '',
+      listingCount: agent.listingCount || 0
     }));
 
     res.status(200).json(formattedAgents);

@@ -111,7 +111,7 @@ const TrendGraph: React.FC = () => {
     const { startDate, endDate } = getDateRange();
 
     try {
-      const response = await fetch('/api/properties/published/by-time', {
+      const response = await fetch('/api/properties/by-time', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ startDate: startDate.toISOString(), endDate: endDate.toISOString() }),
@@ -145,7 +145,7 @@ const TrendGraph: React.FC = () => {
     <div>
       <div className="flex justify-center mb-4">
         <button
-          className={`px-4 py-2 mx-2 rounded ${
+          className={`px-4 py-2 mx-2 rounded text-gray-800 ${
             filterType === 'week' ? 'bg-blue-500 text-white' : 'bg-gray-200'
           }`}
           onClick={() => setFilterType('week')}
@@ -153,7 +153,7 @@ const TrendGraph: React.FC = () => {
           Week
         </button>
         <button
-          className={`px-4 py-2 mx-2 rounded ${
+          className={`px-4 py-2 mx-2 rounded text-gray-800 ${
             filterType === 'month' ? 'bg-blue-500 text-white' : 'bg-gray-200'
           }`}
           onClick={() => setFilterType('month')}
@@ -161,7 +161,7 @@ const TrendGraph: React.FC = () => {
           Month
         </button>
         <button
-          className={`px-4 py-2 mx-2 rounded ${
+          className={`px-4 py-2 mx-2 rounded text-gray-800 ${
             filterType === 'year' ? 'bg-blue-500 text-white' : 'bg-gray-200'
           }`}
           onClick={() => setFilterType('year')}

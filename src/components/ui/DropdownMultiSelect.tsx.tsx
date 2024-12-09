@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 type DropdownMultiSelectProps = {
   options: { value: string; label: string }[]; 
@@ -18,6 +18,7 @@ const DropdownMultiSelect: React.FC<DropdownMultiSelectProps> = ({
   disabled = false,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   const toggleDropdown = () => {
     if (!disabled) {
@@ -33,8 +34,21 @@ const DropdownMultiSelect: React.FC<DropdownMultiSelectProps> = ({
     }
   };
 
+  const handleClickOutside = (event: MouseEvent) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      setIsOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   return (
-    <div className="relative">
+    <div className="relative" ref={dropdownRef}>
       <button
         onClick={toggleDropdown}
         className={`w-full px-4 py-2 border border-gray-300 text-gray-800 rounded-md bg-white shadow-sm text-left focus:outline-none ${

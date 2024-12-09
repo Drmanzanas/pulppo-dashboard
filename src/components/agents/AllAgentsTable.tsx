@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import DynamicTable from '@/components/tables/DynamicTable';
 import Heading from '@/components/ui/Heading';
 import SearchInput from '../ui/SearchInput';
@@ -32,7 +32,7 @@ const AllAgentsTable: React.FC = () => {
     };
   }, [searchTerm]);
 
-  const columns = [
+  const columns =  useMemo(() => [
     {
       header: 'Name',
       key: 'name',
@@ -75,7 +75,7 @@ const AllAgentsTable: React.FC = () => {
         ),
         render: (value: string) => <ProfilePictureCell value={value} />
       },
-  ];
+  ], []);
 
   return (
     <div>

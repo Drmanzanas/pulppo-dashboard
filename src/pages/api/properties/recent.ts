@@ -38,7 +38,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       .toArray();
 
     const formattedResults = results.map((item) => ({
-      id: item._id,
+      id: item.id,
       title: item.listing?.title || 'Unknown',
       price: item.listing?.price?.price || 0,
       currency: item.listing?.price?.currency || 'Unknown',

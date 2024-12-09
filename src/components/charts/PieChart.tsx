@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { PieChart, Pie, Tooltip, Cell, ResponsiveContainer } from 'recharts';
 import Heading from '../ui/Heading';
 import DropdownMultiSelect from '../ui/DropdownMultiSelect.tsx';
@@ -22,11 +22,19 @@ const PropertyTypePieChart = ({
     label: item._id || 'Unknown',
   }));
 
-  
+  const [initialLoad, setInitialLoad] = useState<boolean>(true);
   const [selectedTypes, setSelectedTypes] = useState<string[]>(
     options.slice(0, 2).map((option) => option.value)
   );
 
+  useEffect(() => {
+    if (initialLoad && options.length > 0) {
+      setSelectedTypes(
+        options.slice(0, 2).map((option) => option.value)
+      );
+      setInitialLoad(false);
+    }
+  }, [options, initialLoad]);
   
   const chartData = data
     .filter((item) => selectedTypes.includes(item._id || 'Unknown')) 

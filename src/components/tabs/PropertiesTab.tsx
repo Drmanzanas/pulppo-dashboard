@@ -5,6 +5,8 @@ import RecentPropertiesTable from '../tables/RecentPropertiesTable';
 import usePropertyTypes from 'src/hooks/usePropertyTypes';
 import LocationFilterChart from '../LocationFilterChart';
 import PriceRangesChartWithFilter from '../PriceRangeWithFilter';
+import TrendGraph from '../charts/TrendGraph';
+import Heading from '../ui/Heading';
 
 const PropertiesTab = () => {
   const { propertyTypes, loading: loadingTypes } = usePropertyTypes();
@@ -13,6 +15,10 @@ const PropertiesTab = () => {
     <div>
       <div>
         <RecentPropertiesTable />
+      </div>
+      <div className="mb-6">
+        <Heading>Count of published Properties</Heading>
+        <TrendGraph />
       </div>
       <div className="mb-6">
         <PropertyTypePieChart

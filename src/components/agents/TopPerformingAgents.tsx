@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import Heading from '@/components/ui/Heading';
 import useTopPerformingAgents from 'src/hooks/useTopPerformingAgents';
 import TableText from '../ui/TableText';
@@ -14,7 +14,7 @@ const TopPerformingAgents: React.FC = () => {
   const { topAgents, loading } = useTopPerformingAgents();
 
   
-const columns = [
+const columns =  useMemo(() => [
     {
       header: 'Name',
       key: 'name',
@@ -39,8 +39,9 @@ const columns = [
       renderHeader: () => <TableText primary="Profile Picture" secondary="Agent's Photo" />,
       render: (value: string) => <ProfilePictureCell value={value} />,
     },
-  ];
+  ], []);
 
+  console.log(topAgents)
   return (
     <div className="p-4 bg-white rounded-lg">
       <Heading>Top Performing Agents</Heading>
